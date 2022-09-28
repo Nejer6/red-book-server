@@ -17,14 +17,32 @@ object DatabaseFactory {
             SchemaUtils.create(Kingdoms)
             SchemaUtils.create(Organisms)
 
-            Kingdoms.insert {
+            val gribyId= Kingdoms.insert {
                 it[nameRussian] = "Грибы"
                 it[nameLatin] = "Griby"
-            }
+            } get Kingdoms.id
 
-            Kingdoms.insert {
+            val jivotnieId = Kingdoms.insert {
                 it[nameRussian] = "Животные"
                 it[nameLatin] = "Jivotnie"
+            } get Kingdoms.id
+
+            Organisms.insert {
+                it[nameLatin] = "Horse"
+                it[nameRussian] = "Лошадь"
+                it[kingdom] = jivotnieId
+            }
+
+            Organisms.insert {
+                it[nameLatin] = "Crab"
+                it[nameRussian] = "Краб"
+                it[kingdom] = jivotnieId
+            }
+
+            Organisms.insert {
+                it[nameRussian] = "Мухомор"
+                it[nameLatin] = "Muchomor"
+                it[kingdom] = gribyId
             }
         }
     }
