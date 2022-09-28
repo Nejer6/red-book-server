@@ -10,9 +10,11 @@ import ru.nejer.models.KingdomDTO
 import ru.nejer.models.Kingdoms
 import ru.nejer.models.OrganismDTO
 import ru.nejer.models.Organisms
+import ru.nejer.routings.v1.v1
 
 fun Route.apiRoute() {
     route("/api") {
+        v1()
         get("/organisms") {
             call.respond(
                 transaction {
@@ -43,5 +45,7 @@ fun Route.apiRoute() {
                 }
             )
         }
+
+
     }
 }
