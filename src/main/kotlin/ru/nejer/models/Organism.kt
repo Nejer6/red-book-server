@@ -7,5 +7,5 @@ data class Organism(val id: Int, val nameRussian: String, val nameLatin: String,
 object Organisms : IntIdTable() {
     val nameRussian = varchar("nameRussian", 100)
     val nameLatin = varchar("nameLatin", 100)
-    val kingdom = reference("kingdom", Kingdoms)
+    val kingdom = reference("kingdom", Kingdoms.id)
 }

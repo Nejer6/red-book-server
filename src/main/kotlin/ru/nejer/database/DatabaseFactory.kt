@@ -13,6 +13,7 @@ object DatabaseFactory {
         val jdbcURL = "jdbc:h2:file:./build/db"
         val database = Database.connect(jdbcURL, driverClassName)
         transaction(database) {
+            SchemaUtils.drop(Kingdoms, Organisms)
             SchemaUtils.create(Kingdoms)
             SchemaUtils.create(Organisms)
 
