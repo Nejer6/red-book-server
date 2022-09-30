@@ -17,32 +17,37 @@ object DatabaseFactory {
             SchemaUtils.create(Kingdoms)
             SchemaUtils.create(Organisms)
 
-            val gribyId= Kingdoms.insert {
+            val fungiId= Kingdoms.insert {
                 it[nameRussian] = "Грибы"
-                it[nameLatin] = "Griby"
+                it[nameLatin] = "Fungi"
             } get Kingdoms.id
 
-            val jivotnieId = Kingdoms.insert {
-                it[nameRussian] = "Животные"
-                it[nameLatin] = "Jivotnie"
+            val plantaeId = Kingdoms.insert {
+                it[nameRussian] = "Растения"
+                it[nameLatin] = "Plantae"
             } get Kingdoms.id
 
             Organisms.insert {
-                it[nameLatin] = "Horse"
-                it[nameRussian] = "Лошадь"
-                it[kingdom] = jivotnieId
+                it[nameLatin] = "Helvella lacunosa Afzel."
+                it[nameRussian] = "Гельвелла ямчатая (г. бороздчатая, лопастник ямчатый)"
+                it[kingdom] = fungiId
+                it[Nenets] = 3
             }
 
             Organisms.insert {
-                it[nameLatin] = "Crab"
-                it[nameRussian] = "Краб"
-                it[kingdom] = jivotnieId
+                it[nameLatin] = "Cortinarius violaceus (L.) Gray"
+                it[nameRussian] = "Паутинник фиолетовый"
+                it[kingdom] = fungiId
+                it[Murmansk] = 3
+                it[Karelia] = 3
+                it[Nenets] = 3
             }
 
             Organisms.insert {
-                it[nameRussian] = "Мухомор"
-                it[nameLatin] = "Muchomor"
-                it[kingdom] = gribyId
+                it[nameRussian] = "Гельвелла ямчатая (г. бороздчатая, лопастник ямчатый)"
+                it[nameLatin] = "Helvella lacunosa Afzel."
+                it[kingdom] = plantaeId
+                it[Nenets] = 3
             }
         }
     }
