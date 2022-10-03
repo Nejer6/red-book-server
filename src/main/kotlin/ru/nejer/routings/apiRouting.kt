@@ -40,8 +40,8 @@ fun Route.apiRoute() {
                 transaction {
                     (Organisms innerJoin Kingdoms).slice(Organisms.kingdom, Organisms.nameRussian, Kingdoms.nameRussian)
                         .selectAll().map {
-                        "${it[Organisms.nameRussian]} живет в ${it[Kingdoms.nameRussian]}"
-                    }
+                            "${it[Organisms.nameRussian]} живет в ${it[Kingdoms.nameRussian]}"
+                        }
                 }
             )
         }

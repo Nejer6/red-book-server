@@ -1,19 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Main page</title>
-    <script src="js/lol.js"></script>
+    <title>Leaflet Polygons</title>
+    <link rel="stylesheet" href="css/http_cdn.leafletjs.com_leaflet-0.7.3_leaflet.css"/>
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/http_cdn.leafletjs.com_leaflet-0.7.3_leaflet.js"></script>
 </head>
+
 <body>
-<table>
-    <tbody id="table">
-    <tr>
-        <th>Название</th>
-        <th>Name</th>
-        <th>Царство</th>
-    </tr>
-    </tbody>
-</table>
+<div id="map"></div>
+<script>
+    // Creating map options
+    const mapOptions = {
+        center: [70.76, 104.68],
+        zoom: 4
+    };
+    // Creating a map object
+    const map = new L.map('map', mapOptions);
+
+    // Creating a Layer object
+    const layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+    // Adding layer to the map
+    map.addLayer(layer);
+
+    // Creating latlng object
+    const latlngs = [
+        [17.385044, 78.486671],
+        [16.506174, 80.648015],
+        [17.686816, 83.218482]
+    ];
+    // Creating a polygon
+    const polygon = L.polygon(latlngs, {color: 'red'});
+
+    // Adding to polygon to map
+    polygon.addTo(map);
+</script>
 </body>
+
 </html>

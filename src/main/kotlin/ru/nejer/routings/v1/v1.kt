@@ -34,7 +34,8 @@ fun Route.v1() {
 
                 route("/organisms") {
                     get {
-                        val id = call.parameters["kingdomId"]?.toInt() ?: return@get call.respondText("kingdom not found")
+                        val id =
+                            call.parameters["kingdomId"]?.toInt() ?: return@get call.respondText("kingdom not found")
                         call.respond(
                             transaction {
                                 Organisms.select { Organisms.kingdom eq id }.map {
