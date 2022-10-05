@@ -4,7 +4,19 @@ html, body {
     width: 100%;
 }
 
-#map {
+/*#map {*/
+/*    height: 100%;*/
+/*    width: auto;*/
+/*}*/
+
+#wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
     height: 100%;
-    width: auto;
+}
+
+#menu {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
 }

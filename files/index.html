@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <meta charset="UTF-8">
     <title>Leaflet Polygons</title>
-    <link rel="stylesheet" href="css/http_cdn.leafletjs.com_leaflet-0.7.3_leaflet.css"/>
+    <link rel="stylesheet" href="css/lib/leaflet.css"/>
     <link rel="stylesheet" href="css/index.css">
-    <script src="js/http_cdn.leafletjs.com_leaflet-0.7.3_leaflet.js"></script>
+    <script src="js/lib/leaflet.js"></script>
 </head>
 
 <body>
-<div id="map"></div>
+
+
+<div id="wrapper">
+    <div id="map"></div>
+    <div id="menu">
+        <div id="selected"></div>
+        <div id="kingdoms"></div>
+    </div>
+</div>
+
+
 <script>
     // Creating map options
     const mapOptions = {
@@ -36,6 +47,7 @@
     // Adding to polygon to map
     polygon.addTo(map);
 </script>
+<script src="js/lol.js"></script>
 </body>
 
 </html>
