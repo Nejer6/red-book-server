@@ -44,8 +44,8 @@ object DatabaseFactory {
             }
 
             Organisms.insert {
-                it[nameRussian] = "Гельвелла ямчатая (г. бороздчатая, лопастник ямчатый)"
-                it[nameLatin] = "Helvella lacunosa Afzel."
+                it[nameRussian] = "Батрахоспермум слизистый, или чётковидный"
+                it[nameLatin] = "Batrachospermum gelatinosum (Linnaeus) De Candolle"
                 it[kingdom] = plantaeId
                 it[Nenets] = 3
             }
