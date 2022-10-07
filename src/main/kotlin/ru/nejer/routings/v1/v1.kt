@@ -5,10 +5,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import ru.nejer.models.KingdomDTO
-import ru.nejer.models.Kingdoms
 import ru.nejer.models.OrganismDTO
 import ru.nejer.models.Organisms
 
@@ -16,35 +13,27 @@ fun Route.v1() {
     route("/v1") {
         route("/organisms") {
             get {
-                val offset = call.request.queryParameters["offset"]?.toInt()
+                val offset = call.request.queryParameters["offset"]?.toLong()
                 val count = call.request.queryParameters["count"]?.toInt()
-                val search = call.request.queryParameters["search"] ?: ""
-                println(search)
+                val search = call.request.queryParameters["search"]?.let {
+                    "%$it%"
+                } ?: "%"
 
-                var array = transaction {
-
-                    Organisms.select {
-                        (Organisms.nameRussian regexp search) or (Organisms.nameLatin regexp search)
-                    }.map {
-                        OrganismDTO.mapToOrganismDTO(it)
+                call.respond(
+                    transaction {
+                        Organisms.select {
+                            (Organisms.nameRussian like search) or (Organisms.nameLatin like search)
+                        }.let {
+                            if (count != null && offset != null) {
+                                it.limit(count, offset)
+                            } else {
+                                it
+                            }
+                        }.map {
+                            OrganismDTO.mapToOrganismDTO(it)
+                        }
                     }
-
-                }
-
-                if (count != null && offset != null) {
-                    val start = if (offset >= array.size) {
-                        return@get call.respondText("Not found")
-                    } else {
-                        offset
-                    }
-
-                    var end = offset + count
-                    if (end > array.size) end = array.size
-
-                    array = array.slice(start until end)
-                }
-
-                call.respond(array)
+                )
             }
         }
 
