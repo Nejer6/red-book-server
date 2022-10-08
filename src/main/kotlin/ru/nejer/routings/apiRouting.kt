@@ -3,7 +3,6 @@ package ru.nejer.routings
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import ru.nejer.models.KingdomDTO
@@ -38,7 +37,7 @@ fun Route.apiRoute() {
         get("/org") {
             call.respond(
                 transaction {
-                    (Organisms innerJoin Kingdoms).slice(Organisms.kingdom, Organisms.nameRussian, Kingdoms.nameRussian)
+                    (Organisms innerJoin Kingdoms).slice(Organisms.kingdomId, Organisms.nameRussian, Kingdoms.nameRussian)
                         .selectAll().map {
                             "${it[Organisms.nameRussian]} живет в ${it[Kingdoms.nameRussian]}"
                         }

@@ -3,94 +3,65 @@ package ru.nejer.routings.v1
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.upperCase
-import ru.nejer.models.OrganismDTO
-import ru.nejer.models.Organisms
+import ru.nejer.models.*
 
 fun Route.v1() {
     route("/v1") {
         route("/organisms") {
             get {
-                val offset = call.request.queryParameters["offset"]?.toLong()
-                val count = call.request.queryParameters["count"]?.toInt()
-                val search = call.request.queryParameters["search"]?.let {
-                    "%$it%".uppercase()
-                } ?: "%"
+                val organismDtos = transaction {
+                    val organismsQuery = Organisms
+                        .innerJoin(OrganismRegion)
+                        .innerJoin(Regions)
+                        .slice(
+                            Organisms.id,
+                            Organisms.nameRussian,
+                            Organisms.nameLatin,
+                            Organisms.kingdomId,
+                            OrganismRegion.count,
+                            Regions.name
+                        )
+                        .selectAll()
 
-                call.respond(
-                    transaction {
-                        Organisms.select {
-                            (Organisms.nameRussian.upperCase() like search) or (Organisms.nameLatin.upperCase() like search)
-                        }.let {
-                            if (count != null && offset != null) {
-                                it.limit(count, offset)
-                            } else {
-                                it
-                            }
-                        }.map {
-                            OrganismDTO.mapToOrganismDTO(it)
+
+                    call.request.queryParameters["search"]?.uppercase()?.let {
+                        organismsQuery.andWhere {
+                            (Organisms.nameRussian.upperCase() like "%$it%") or
+                                    (Organisms.nameLatin.upperCase() like "%$it%")
                         }
                     }
-                )
+
+                    mapToOrganismDto(organismsQuery)
+                }
+
+                call.respond(organismDtos)
             }
         }
 
-//        route("/kingdoms") {
-//            get {
-//                call.respond(transaction {
-//                    Kingdoms.selectAll().map {
-//                        KingdomDTO.mapToKingdomDTO(it)
-//                    }
-//                })
-//            }
-//
-//            route("/{kingdomId}") {
-//                get {
-//                    val id =
-//                        call.parameters["kingdomId"]?.toInt() ?: return@get call.respondText("kingdom not found")
-//                    call.respond(
-//                        transaction {
-//                            KingdomDTO.mapToKingdomDTO(Kingdoms.select { Kingdoms.id eq id }.first())
-//                        }
-//                    )
-//                }
-//
-//                route("/organisms") {
-//                    get {
-//                        val offset = call.request.queryParameters["offset"]?.toInt()
-//                        val count = call.request.queryParameters["count"]?.toInt()
-//
-//                        val id =
-//                            call.parameters["kingdomId"]?.toInt()
-//                                ?: return@get call.respondText("kingdom not found")
-//                        var array = transaction {
-//                            Organisms.select { Organisms.kingdom eq id }.map {
-//                                OrganismDTO.mapToOrganismDTO(it)
-//                            }
-//                        }
-//
-//                        if (count != null && offset != null) {
-//                            val start = if (offset >= array.size) {
-//                                return@get call.respondText("Not found")
-//                            } else {
-//                                offset
-//                            }
-//
-//                            var end = offset + count
-//                            if (end > array.size) end = array.size
-//
-//                            array = array.slice(start until end)
-//                        }
-//
-//                        call.respond(array)
-//
-//
-//                    }
-//                }
-//            }
-//        }
+        route("/regions") {
+            get {
+                val regionDtos = transaction {
+                    val regionsQuery = Regions.selectAll()
+
+                    mapToRegionsDTO(regionsQuery)
+                }
+
+                call.respond(regionDtos)
+            }
+        }
+
+        route("/kingdoms") {
+            get {
+                val kingdomDtos = transaction {
+                    val kingdomsQuery = Kingdoms.selectAll()
+
+                    mapToKingdomDTO(kingdomsQuery)
+                }
+
+                call.respond(kingdomDtos)
+            }
+        }
     }
 }
