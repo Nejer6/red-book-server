@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.upperCase
 import ru.nejer.models.OrganismDTO
 import ru.nejer.models.Organisms
 
@@ -16,13 +17,13 @@ fun Route.v1() {
                 val offset = call.request.queryParameters["offset"]?.toLong()
                 val count = call.request.queryParameters["count"]?.toInt()
                 val search = call.request.queryParameters["search"]?.let {
-                    "%$it%"
+                    "%$it%".uppercase()
                 } ?: "%"
 
                 call.respond(
                     transaction {
                         Organisms.select {
-                            (Organisms.nameRussian like search) or (Organisms.nameLatin like search)
+                            (Organisms.nameRussian.upperCase() like search) or (Organisms.nameLatin.upperCase() like search)
                         }.let {
                             if (count != null && offset != null) {
                                 it.limit(count, offset)
