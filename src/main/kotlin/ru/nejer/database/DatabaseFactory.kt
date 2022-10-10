@@ -1,14 +1,13 @@
 package ru.nejer.database
 
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
-import ru.nejer.models.Kingdoms
-import ru.nejer.models.OrganismRegion
-import ru.nejer.models.Organisms
-import ru.nejer.models.Regions
+import ru.nejer.models.*
 
 object DatabaseFactory {
     fun init() {
@@ -21,6 +20,12 @@ object DatabaseFactory {
             SchemaUtils.create(Organisms)
             SchemaUtils.create(Regions)
             SchemaUtils.create(OrganismRegion)
+
+//            val geoJsonModel = Json.decodeFromString<GeoJsonModel>(Constants.geojson)
+//
+//            Regions.batchInsert(geoJsonModel.features) {
+//                this[Regions.name] = it.properties.local_name
+//            }
 
             Organisms.insert {
                 it[nameLatin] = "Helvella lacunosa Afzel."
