@@ -3,9 +3,13 @@ package ru.nejer.routings.v1
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import ru.nejer.json.JsonParser
 import ru.nejer.models.*
+import java.io.File
 
 fun Route.v1() {
     route("/v1") {
@@ -49,6 +53,12 @@ fun Route.v1() {
                 }
 
                 call.respond(regionDtos)
+            }
+        }
+
+        route("/regions-geojson") {
+            get {
+                call.respond(JsonParser.regions)
             }
         }
 

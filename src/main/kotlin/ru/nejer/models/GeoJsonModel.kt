@@ -1,25 +1,26 @@
 package ru.nejer.models
 
-@kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable
+@Serializable
 data class GeoJsonModel(
     val type: String,
     val features: List<Feature>,
 )
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class Feature(
     val type: String,
     val geometry: MultiPolygon,
     val properties: Properties
 )
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class MultiPolygon(
     val type: String,
     val coordinates: List<List<List<List<Double>>>>
 )
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class Properties(
     val osm_id: Int,
     val boundary: String,
