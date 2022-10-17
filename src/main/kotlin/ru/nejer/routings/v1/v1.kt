@@ -19,13 +19,16 @@ fun Route.v1() {
                     val organismsQuery = Organisms
                         .innerJoin(OrganismRegion)
                         .innerJoin(Regions)
+                        .innerJoin(Kingdoms)
                         .slice(
                             Organisms.id,
                             Organisms.nameRussian,
                             Organisms.nameLatin,
                             Organisms.kingdomId,
                             OrganismRegion.count,
-                            Regions.name
+                            Regions.name,
+                            Kingdoms.nameRussian,
+                            Kingdoms.nameLatin
                         )
                         .selectAll()
 
@@ -59,6 +62,12 @@ fun Route.v1() {
         route("/regions-geojson") {
             get {
                 call.respond(JsonParser.regions)
+            }
+        }
+
+        route("/animals-geojson") {
+            get {
+                call.respond(JsonParser.animals)
             }
         }
 

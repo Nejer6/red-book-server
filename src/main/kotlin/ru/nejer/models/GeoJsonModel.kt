@@ -1,32 +1,43 @@
 package ru.nejer.models
 
 import kotlinx.serialization.Serializable
+
 @Serializable
 data class GeoJsonModel(
     val type: String,
-    val features: List<Feature>,
+    val name: String,
+    val crs: Crs,
+    val features: List<Feature>
+)
+
+@Serializable
+data class Crs(
+    val type: String,
+    val properties: PropertiesCrs
+)
+
+@Serializable
+data class PropertiesCrs(
+    val name: String
 )
 
 @Serializable
 data class Feature(
     val type: String,
-    val geometry: MultiPolygon,
-    val properties: Properties
-)
-
-@Serializable
-data class MultiPolygon(
-    val type: String,
-    val coordinates: List<List<List<List<Double>>>>
+    val properties: Properties,
+    val geometry: Geometry
 )
 
 @Serializable
 data class Properties(
-    val osm_id: Int,
-    val boundary: String,
-    val admin_level: Int,
-    val parents: String,
-    val name: String,
-    val local_name: String,
-    val name_en: String?
+    val id: Int,
+    val nameRu: String,
+    val name: String?,
+    val rare: String
+)
+
+@Serializable
+data class Geometry(
+    val type: String,
+    val coordinates: List<List<List<List<Double>>>>
 )
