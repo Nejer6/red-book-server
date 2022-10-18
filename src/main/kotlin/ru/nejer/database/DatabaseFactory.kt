@@ -13,11 +13,11 @@ object DatabaseFactory {
         transaction(database) {
             SchemaUtils.create(Animals, Polygons1, Polygons2, Polygons3, Points, Kingdoms)
 
-//            insertAnimalsGeojson()
+            //insertAnimalsGeojson(kingdomId)
         }
     }
 
-    private fun insertAnimalsGeojson() {
+    private fun insertAnimalsGeojson(_kingdomId: Int) {
         val animalsGeoJson = JsonParser.animals
 
         animalsGeoJson.features.forEach { animal ->
@@ -25,6 +25,7 @@ object DatabaseFactory {
                 it[name] = animal.properties.name
                 it[nameRu] = animal.properties.nameRu
                 it[rare] = animal.properties.rare
+                it[kingdomId] = _kingdomId
             } get Animals.id
 
             val newPolygon1Id = Polygons1.insert {

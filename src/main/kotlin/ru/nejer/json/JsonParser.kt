@@ -11,6 +11,6 @@ object JsonParser {
     }
 
     val animals: GeoJsonModel by lazy {
-        Json.decodeFromString(File("json/animals.geojson").readText(Charsets.UTF_8))
+        Json.decodeFromString(File("json/griby_polygon.geojson").readText(Charsets.UTF_8))
     }
 }

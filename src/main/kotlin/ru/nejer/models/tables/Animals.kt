@@ -1,6 +1,7 @@
 package ru.nejer.models.tables
 
 import org.jetbrains.exposed.sql.Query
+import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import ru.nejer.models.*
@@ -9,7 +10,7 @@ object Animals : Table() {
     val id = integer("id").autoIncrement()
     val nameRu = varchar("nameRu", 100)
     val name = varchar("name", 100).nullable()
-    val kingdomId = reference("kingdomId", Kingdoms.id)
+    val kingdomId = reference("kingdomId", Kingdoms.id, onDelete = ReferenceOption.CASCADE)
     val rare = varchar("rare", 3)
 
     override val primaryKey = PrimaryKey(id)
