@@ -9,6 +9,7 @@ object Animals : Table() {
     val id = integer("id").autoIncrement()
     val nameRu = varchar("nameRu", 100)
     val name = varchar("name", 100).nullable()
+    val kingdomId = reference("kingdomId", Kingdoms.id)
     val rare = varchar("rare", 3)
 
     override val primaryKey = PrimaryKey(id)

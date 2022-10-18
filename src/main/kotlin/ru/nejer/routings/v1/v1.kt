@@ -14,7 +14,7 @@ fun Route.v1() {
         route("/animals") {
             get {
                 val animalsDtos = transaction {
-                    val animalsQuery = Animals.selectAll()
+                    val animalsQuery = Animals.innerJoin(Kingdoms).selectAll()
 
                     call.request.queryParameters["search"]?.uppercase()?.let {
                         animalsQuery.andWhere {
@@ -34,7 +34,8 @@ fun Route.v1() {
                             id = it[Animals.id],
                             name = it[Animals.name],
                             nameRu = it[Animals.nameRu],
-                            rare = it[Animals.rare]
+                            rare = it[Animals.rare],
+                            kingdom = it[Kingdoms.name]
                         )
                     }
 

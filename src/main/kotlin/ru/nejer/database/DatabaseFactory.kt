@@ -11,7 +11,8 @@ object DatabaseFactory {
         val jdbcURL = "jdbc:h2:file:./build/db"
         val database = Database.connect(jdbcURL, driverClassName)
         transaction(database) {
-            SchemaUtils.create(Animals, Polygons1, Polygons2, Polygons3, Points)
+            SchemaUtils.create(Animals, Polygons1, Polygons2, Polygons3, Points, Kingdoms)
+
 //            insertAnimalsGeojson()
         }
     }
