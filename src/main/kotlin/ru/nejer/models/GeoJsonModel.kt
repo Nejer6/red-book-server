@@ -23,7 +23,7 @@ data class PropertiesCrs(
 
 @Serializable
 data class Feature(
-    val type: String,
+    val type: String = "Feature",
     val properties: Properties,
     val geometry: Geometry
 )
@@ -38,6 +38,6 @@ data class Properties(
 
 @Serializable
 data class Geometry(
-    val type: String,
+    val type: String = "MultiPolygon",
     val coordinates: List<List<List<List<Double>>>>
 )

@@ -2,12 +2,11 @@ package ru.nejer.database
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import ru.nejer.json.JsonParser
 import ru.nejer.models.*
+import ru.nejer.models.tables.*
 
 object DatabaseFactory {
     fun init() {
@@ -49,6 +48,46 @@ object DatabaseFactory {
                 it[regionId] = 5
                 it[organismId] = 3
                 it[count] = 3
+            }
+
+            SchemaUtils.create(Animals, Polygons1, Polygons2, Polygons3, Points)
+
+//            insertAnimalsGeojson()
+        }
+    }
+
+    private fun insertAnimalsGeojson() {
+        val animalsGeoJson = JsonParser.animals
+
+        animalsGeoJson.features.forEach { animal ->
+            val newAnimalId = Animals.insert {
+                it[name] = animal.properties.name
+                it[nameRu] = animal.properties.nameRu
+                it[rare] = animal.properties.rare
+            } get Animals.id
+
+            val newPolygon1Id = Polygons1.insert {
+                it[animalId] = newAnimalId
+            } get Polygons1.id
+
+            animal.geometry.coordinates.forEach {
+                val newPolygon2Id = Polygons2.insert {
+                    it[polygon1Id] = newPolygon1Id
+                } get Polygons2.id
+
+                it.forEach {
+                    val newPolygon3Id = Polygons3.insert {
+                        it[polygon2Id] = newPolygon2Id
+                    } get Polygons3.id
+
+                    it.forEach { point ->
+                        Points.insert {
+                            it[longitude] = point.first()
+                            it[latitude] = point.last()
+                            it[polygon3Id] = newPolygon3Id
+                        }
+                    }
+                }
             }
         }
     }
