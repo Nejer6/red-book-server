@@ -13,7 +13,11 @@ object DatabaseFactory {
         transaction(database) {
             SchemaUtils.create(Animals, Polygons1, Polygons2, Polygons3, Points, Kingdoms)
 
-            //insertAnimalsGeojson(kingdomId)
+//            val kingdomId = Kingdoms.insert {
+//                it[name] = "Растения"
+//            } get Kingdoms.id
+//
+//            insertAnimalsGeojson(kingdomId)
         }
     }
 

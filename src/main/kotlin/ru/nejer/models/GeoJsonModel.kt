@@ -30,7 +30,7 @@ data class Feature(
 
 @Serializable
 data class Properties(
-    val id: Int,
+    val id: Int?,
     val nameRu: String,
     val name: String?,
     val rare: String

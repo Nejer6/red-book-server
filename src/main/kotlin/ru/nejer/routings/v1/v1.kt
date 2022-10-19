@@ -16,6 +16,10 @@ fun Route.v1() {
                 val animalsDtos = transaction {
                     val animalsQuery = Animals.innerJoin(Kingdoms).selectAll()
 
+                    call.request.queryParameters["kingdom"]?.let {
+                        animalsQuery.andWhere { Kingdoms.name eq it }
+                    }
+
                     call.request.queryParameters["search"]?.uppercase()?.let {
                         animalsQuery.andWhere {
                             (Animals.nameRu.upperCase() like "%$it%") or
@@ -27,6 +31,16 @@ fun Route.v1() {
                         call.request.queryParameters["count"]?.toInt()?.let { count ->
                             animalsQuery.limit(count, offset)
                         }
+                    }
+
+                    call.request.queryParameters["sort"]?.let {
+                        val sortOrder = if (it == "ASC") {
+                            SortOrder.ASC
+                        } else {
+                            SortOrder.DESC
+                        }
+
+                        animalsQuery.orderBy(Animals.rare to sortOrder)
                     }
 
                     animalsQuery.map {
