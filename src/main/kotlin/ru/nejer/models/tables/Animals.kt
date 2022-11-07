@@ -9,7 +9,7 @@ import ru.nejer.models.*
 object Animals : Table() {
     val id = integer("id").autoIncrement()
     val nameRu = varchar("nameRu", 100)
-    val name = varchar("name", 122).nullable()
+    val name = varchar("name", 187).nullable()
     val kingdomId = reference("kingdomId", Kingdoms.id, onDelete = ReferenceOption.CASCADE)
     val rare = varchar("rare", 3)
     val regionId = reference("regionId", Regions.id, onDelete = ReferenceOption.CASCADE).nullable()
@@ -35,7 +35,7 @@ fun toFeature(animalResultRows: List<ResultRow>): Feature {
             nameRu = firstRow[Animals.nameRu],
             name = firstRow[Animals.name],
             rare = firstRow[Animals.rare],
-            adm_name_e = firstRow[Regions.nameRu]
+            adm_name = firstRow[Regions.nameRu]
         ),
         geometry = Geometry(
             coordinates = animalResultRows

@@ -17,7 +17,7 @@ object DatabaseFactory {
         transaction(database) {
             SchemaUtils.create(Polygons1, Polygons2, Polygons3, Points, Kingdoms, Regions, Animals)
 
-            insertAnimalsGeojson(1, "json/animals.geojson")
+            //insertAnimalsGeojson(3, "json/Plants.geojson")
         }
     }
 
