@@ -17,7 +17,7 @@ object DatabaseFactory {
         transaction(database) {
             SchemaUtils.create(Polygons1, Polygons2, Polygons3, Points, Kingdoms, Regions, Animals)
 
-            //insertAnimalsGeojson(2, "json/mushrooms_geocoded.geojson")
+            insertAnimalsGeojson(1, "json/animals.geojson")
         }
     }
 
@@ -31,7 +31,7 @@ object DatabaseFactory {
                 it[nameRu] = animal.properties.nameRu
                 it[rare] = animal.properties.rare
                 it[kingdomId] = _kingdomId
-                it[regionId] = Regions.select { Regions.name eq animal.properties.adm_name_e }.first()[Regions.id]
+                it[regionId] = Regions.select { Regions.nameRu eq animal.properties.adm_name }.first()[Regions.id]
             } get Animals.id
 
             val newPolygon1Id = Polygons1.insert {
