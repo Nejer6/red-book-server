@@ -14,7 +14,11 @@ fun Route.v1() {
         route("/animals") {
             get {
                 val animalsDtos = transaction {
-                    val animalsQuery = Animals.innerJoin(Kingdoms).selectAll()
+                    val animalsQuery = Animals.innerJoin(Kingdoms).innerJoin(Regions).selectAll()
+
+                    call.request.queryParameters["region"]?.let {
+                        animalsQuery.andWhere { Regions.nameRu eq it }
+                    }
 
                     call.request.queryParameters["kingdom"]?.let {
                         animalsQuery.andWhere { Kingdoms.name eq it }
@@ -24,12 +28,6 @@ fun Route.v1() {
                         animalsQuery.andWhere {
                             (Animals.nameRu.upperCase() like "%$it%") or
                                     (Animals.name.upperCase() like "%$it%")
-                        }
-                    }
-
-                    call.request.queryParameters["offset"]?.toLong()?.let { offset ->
-                        call.request.queryParameters["count"]?.toInt()?.let { count ->
-                            animalsQuery.limit(count, offset)
                         }
                     }
 
@@ -43,13 +41,20 @@ fun Route.v1() {
                         animalsQuery.orderBy(Animals.rare to sortOrder)
                     }
 
+                    call.request.queryParameters["offset"]?.toLong()?.let { offset ->
+                        call.request.queryParameters["count"]?.toInt()?.let { count ->
+                            animalsQuery.limit(count, offset)
+                        }
+                    }
+
                     animalsQuery.map {
                         Animal(
                             id = it[Animals.id],
                             name = it[Animals.name],
                             nameRu = it[Animals.nameRu],
                             rare = it[Animals.rare],
-                            kingdom = it[Kingdoms.name]
+                            kingdom = it[Kingdoms.name],
+                            adm_name = it[Regions.nameRu]
                         )
                     }
 
