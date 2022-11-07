@@ -1,28 +1,29 @@
 package ru.nejer.database
 
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import ru.nejer.json.JsonParser
+import ru.nejer.models.GeoJsonModel
 import ru.nejer.models.tables.*
+import java.io.File
 
 object DatabaseFactory {
     fun init() {
         val driverClassName = "org.h2.Driver"
-        val jdbcURL = "jdbc:h2:file:./build/db"
+        //val jdbcURL = "jdbc:h2:file:./build/db"
+        val jdbcURL = "jdbc:h2:file:./data/db"
         val database = Database.connect(jdbcURL, driverClassName)
         transaction(database) {
-            SchemaUtils.create(Animals, Polygons1, Polygons2, Polygons3, Points, Kingdoms)
+            SchemaUtils.create(Polygons1, Polygons2, Polygons3, Points, Kingdoms, Regions, Animals)
 
-//            val kingdomId = Kingdoms.insert {
-//                it[name] = "Растения"
-//            } get Kingdoms.id
-//
-//            insertAnimalsGeojson(kingdomId)
+            //insertAnimalsGeojson(2, "json/mushrooms_geocoded.geojson")
         }
     }
 
-    private fun insertAnimalsGeojson(_kingdomId: Int) {
-        val animalsGeoJson = JsonParser.animals
+    private fun insertAnimalsGeojson(_kingdomId: Int, pathname: String) {
+        val animalsGeoJson =
+            Json.decodeFromString<GeoJsonModel>(File(pathname).readText(Charsets.UTF_8))
 
         animalsGeoJson.features.forEach { animal ->
             val newAnimalId = Animals.insert {
@@ -30,6 +31,7 @@ object DatabaseFactory {
                 it[nameRu] = animal.properties.nameRu
                 it[rare] = animal.properties.rare
                 it[kingdomId] = _kingdomId
+                it[regionId] = Regions.select { Regions.name eq animal.properties.adm_name_e }.first()[Regions.id]
             } get Animals.id
 
             val newPolygon1Id = Polygons1.insert {

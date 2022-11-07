@@ -33,7 +33,8 @@ data class Properties(
     val id: Int?,
     val nameRu: String,
     val name: String?,
-    val rare: String
+    val rare: String,
+    val adm_name_e: String
 )
 
 @Serializable
