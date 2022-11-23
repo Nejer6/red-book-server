@@ -8,13 +8,14 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import ru.nejer.models.*
 import ru.nejer.models.tables.*
+import java.io.File
 
 fun Route.v1() {
     route("/v1") {
         route("/animals") {
             get {
                 val animalsDtos = transaction {
-                    val animalsQuery = Animals.innerJoin(Kingdoms).innerJoin(Regions).selectAll()
+                    val animalsQuery = Animals.innerJoin(Kingdoms).innerJoin(Regions).leftJoin(AnimalClass).selectAll()
 
                     call.request.queryParameters["region"]?.let {
                         animalsQuery.andWhere { Regions.nameRu eq it }
@@ -22,6 +23,10 @@ fun Route.v1() {
 
                     call.request.queryParameters["kingdom"]?.let {
                         animalsQuery.andWhere { Kingdoms.name eq it }
+                    }
+
+                    call.request.queryParameters["animalClass"]?.let {
+                        animalsQuery.andWhere { AnimalClass.name eq it }
                     }
 
                     call.request.queryParameters["search"]?.uppercase()?.let {
@@ -38,7 +43,7 @@ fun Route.v1() {
                             SortOrder.DESC
                         }
 
-                        animalsQuery.orderBy(Animals.rare to sortOrder)
+                        animalsQuery.orderBy(Animals.rare to sortOrder, Animals.id to SortOrder.ASC)
                     }
 
                     call.request.queryParameters["offset"]?.toLong()?.let { offset ->
@@ -54,7 +59,8 @@ fun Route.v1() {
                             nameRu = it[Animals.nameRu],
                             rare = it[Animals.rare],
                             kingdom = it[Kingdoms.name],
-                            adm_name = it[Regions.nameRu]
+                            region = it[Regions.nameRu],
+                            animalClass = it[AnimalClass.name]
                         )
                     }
 
@@ -72,6 +78,8 @@ fun Route.v1() {
                             .innerJoin(Polygons2)
                             .innerJoin(Polygons3)
                             .innerJoin(Points)
+                            .innerJoin(Regions)
+                            .leftJoin(AnimalClass)
                             .select { Animals.id eq id }
 
                         toFeature(animalQuery.toList())
@@ -79,6 +87,12 @@ fun Route.v1() {
 
                     call.respond(animalDtos)
                 }
+            }
+        }
+
+        route("/arctic-territory") {
+            get {
+                call.respond(File("json/arctic_territory.geojson").readText(Charsets.UTF_8))
             }
         }
     }

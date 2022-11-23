@@ -8,5 +8,6 @@ data class Animal(
     val nameRu: String,
     val kingdom: String,
     val rare: String,
-    val adm_name: String
+    val region: String,
+    val animalClass: String?
 )

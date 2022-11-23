@@ -4,6 +4,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import ru.nejer.models.Animal
 import ru.nejer.models.GeoJsonModel
 import ru.nejer.models.tables.*
 import java.io.File
@@ -15,10 +16,31 @@ object DatabaseFactory {
         val jdbcURL = "jdbc:h2:file:./data/db"
         val database = Database.connect(jdbcURL, driverClassName)
         transaction(database) {
-            SchemaUtils.create(Polygons1, Polygons2, Polygons3, Points, Kingdoms, Regions, Animals)
+            SchemaUtils.create(
+                Polygons1,
+                Polygons2,
+                Polygons3,
+                Points,
+                Kingdoms,
+                Regions,
+                Animals,
+                AnimalClass
+            )
 
-            //insertAnimalsGeojson(3, "json/Plants.geojson")
+            //Animals.deleteWhere { Animals.kingdomId eq 3 }
+
+            //SchemaUtils.create(Polygons1, Polygons2, Polygons3, Points, Kingdoms, Regions, Animals, AnimalClass)
+
+            //Animals.deleteWhere { Animals.kingdomId eq 1 }
+
+            //insertAnimalsGeojson(3, "json/plants.geojson")
         }
+    }
+
+    private fun insertAnimalClass(name: String): Int {
+        return AnimalClass.insert {
+            it[this.name] = name
+        } get AnimalClass.id
     }
 
     private fun insertAnimalsGeojson(_kingdomId: Int, pathname: String) {
@@ -32,6 +54,16 @@ object DatabaseFactory {
                 it[rare] = animal.properties.rare
                 it[kingdomId] = _kingdomId
                 it[regionId] = Regions.select { Regions.nameRu eq animal.properties.adm_name }.first()[Regions.id]
+
+                if (animal.properties.animalClass != null) {
+                    val animalClassRow = AnimalClass.select { AnimalClass.name eq animal.properties.animalClass }.firstOrNull()
+                    if (animalClassRow == null) {
+                        it[animalClass] = insertAnimalClass(animal.properties.animalClass)
+                    } else {
+                        it[animalClass] = animalClassRow[AnimalClass.id]
+                    }
+                }
+
             } get Animals.id
 
             val newPolygon1Id = Polygons1.insert {

@@ -34,7 +34,8 @@ data class Properties(
     val nameRu: String,
     val name: String?,
     val rare: String,
-    val adm_name: String
+    val adm_name: String,
+    val animalClass: String? = null
 )
 
 @Serializable

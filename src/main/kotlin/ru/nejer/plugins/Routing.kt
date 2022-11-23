@@ -9,11 +9,11 @@ import java.io.File
 fun Application.configureRouting() {
 
     routing {
-        static {
-            staticRootFolder = File("files")
-            default("index.html")
-            files(".")
-        }
+//        static {
+//            staticRootFolder = File("files")
+//            default("index.html")
+//            files(".")
+//        }
         apiRoute()
     }
 }

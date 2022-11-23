@@ -13,6 +13,7 @@ object Animals : Table() {
     val kingdomId = reference("kingdomId", Kingdoms.id, onDelete = ReferenceOption.CASCADE)
     val rare = varchar("rare", 3)
     val regionId = reference("regionId", Regions.id, onDelete = ReferenceOption.CASCADE).nullable()
+    val animalClass = reference("animalClass", AnimalClass.id, onDelete = ReferenceOption.CASCADE).nullable()
 
     override val primaryKey = PrimaryKey(id)
 }
@@ -35,7 +36,8 @@ fun toFeature(animalResultRows: List<ResultRow>): Feature {
             nameRu = firstRow[Animals.nameRu],
             name = firstRow[Animals.name],
             rare = firstRow[Animals.rare],
-            adm_name = firstRow[Regions.nameRu]
+            adm_name = firstRow[Regions.nameRu],
+            animalClass = firstRow[AnimalClass.name]
         ),
         geometry = Geometry(
             coordinates = animalResultRows
